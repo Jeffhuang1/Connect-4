@@ -1,0 +1,134 @@
+<html>
+	<head>
+		<style>
+			.circle {
+				border-radius: 100px;
+				height: 100px;
+				width: 100px;
+				display: inline-block;
+				border: 3px solid black;
+				background-color: #FFFFFF;
+			}
+			.circle:hover{
+				border: 3px solid black;
+				background-color: #FFFFFF;
+			}
+			.circlered {
+				border-radius: 100px;
+				height: 100px;
+				width: 100px;
+				display: inline-block;
+				border: 3px solid black;
+				background-color: red;
+			}
+			.circleyellow {
+				border-radius: 100px;
+				height: 100px;
+				width: 100px;
+				display: inline-block;
+				border: 3px solid black;
+				background-color: yellow;
+			}
+			.circlered:hover {
+			}
+			.circleyellow:hove {
+			}
+			.row {
+				margin: auto;
+				display: block;
+			}
+			#board {
+				background-color: #2dc4b0;
+				padding: 10px;
+				display: inline-block;
+				border-radius: 10px;
+			}
+
+			.reverseButton{
+				padding-top:20px;
+			}
+			.backButton {
+			  -webkit-border-radius: 49;
+			  -moz-border-radius: 49;
+			  border-radius: 49px;
+			  font-family: Arial;
+			  color: #ffffff;
+			  font-size: 20px;
+			  background: #f2ba2c;
+			  padding: 10px 20px 10px 20px;
+			  text-decoration: none;
+			}
+
+			.backButton:hover {
+			  background: #eda509;
+			  text-decoration: none;
+			}
+			body {
+				background-color: #1C1C1C;
+			}
+		</style>
+		<title> Connect4 </title>
+	</head>
+	<body>
+	<div id='board'>
+	<div class='row'>
+		<div id='35' class=circle></div>
+		<div id='36' class=circle></div>
+		<div id='37' class=circle></div>
+		<div id='38' class=circle></div>
+		<div id='39' class=circle></div>
+		<div id='40' class=circle></div>
+		<div id='41' class=circle></div>
+	</div>
+	<div class='row'>
+		<div id='28' class=circle></div>
+		<div id='29' class=circle></div>
+		<div id='30' class=circle></div>
+		<div id='31' class=circle></div>
+		<div id='32' class=circle></div>
+		<div id='33' class=circle></div>
+		<div id='34' class=circle></div>
+	</div>
+	<div class='row'>
+		<div id='21' class=circle></div>
+		<div id='22' class=circle></div>
+		<div id='23' class=circle></div>
+		<div id='24' class=circle></div>
+		<div id='25' class=circle></div>
+		<div id='26' class=circle></div>
+		<div id='27' class=circle></div>
+	</div>
+	<div class='row'>
+		<div id='14' class=circle></div>
+		<div id='15' class=circle></div>
+		<div id='16' class=circle></div>
+		<div id='17' class=circle></div>
+		<div id='18' class=circle></div>
+		<div id='19' class=circle></div>
+		<div id='20' class=circle></div>
+	</div>
+	<div class='row'>
+		<div id='7' class=circle></div>
+		<div id='8' class=circle></div>
+		<div id='9' class=circle></div>
+		<div id='10' class=circle></div>
+		<div id='11' class=circle></div>
+		<div id='12' class=circle></div>
+		<div id='13' class=circle></div>
+	</div>
+	<div class='row'>
+		<div id='0' class=circle></div>
+		<div id='1' class=circle></div>
+		<div id='2' class=circle></div>
+		<div id='3' class=circle></div>
+		<div id='4' class=circle></div>
+		<div id='5' class=circle></div>
+		<div id='6' class=circle></div>
+	</div>
+	</div>
+	<div class='reverseButton'>
+	<button id='reverse' class='backButton'>Take Back The Last Move</button>
+	</div>
+	</body>
+			<script type="text/javascript" src='connect4.js'></script>
+</html>
