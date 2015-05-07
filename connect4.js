@@ -250,17 +250,26 @@ var runAI = function(){
 	AIOn = true;
 }
 var copyAndComputeAI = function(){
+	var currentColor;
+	var otherColor;
+	if(count % 2 == 0){
+		currentColor = 'circleyellow';
+		otherColor = 'circlered';
+	}
+	else{
+		currentColor = 'circlered';
+		otherColor = 'circleyellow';
+	}
+	if(count == 0){
+		bestMove = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
+		console.log(bestMove);
+		circles[bestMove].className = otherColor;
+		moveHistory.push(bestMove);
+		aiCount+=2;
+		count++;
+		return;
+	}
 	if(aiCount == count){
-		var currentColor;
-		var otherColor;
-		if(count % 2 == 0){
-			currentColor = 'circleyellow';
-			otherColor = 'circlered';
-		}
-		else{
-			currentColor = 'circlered';
-			otherColor = 'circleyellow';
-		}
 		//new copy of circles
 		var circlesCopy = [];
 		for(var i = 0; i < circles.length; i++){
