@@ -12,7 +12,10 @@ var aiCount;
 var aiColor;
 var AIOn = false;
 var j = 0;
+var gameOver = false;
 var changeClass = function( name, history ) {
+	if(gameOver)
+		return;
 	j = 0;
 	while( circles[j] != name ){
 		j++;
@@ -49,6 +52,8 @@ var changeClass = function( name, history ) {
 				j = j + 7;
 			}
 		}
+		if(j > 41)
+			return;
 		if(circles[j].className == 'circle'){
 			while( j > 6){
 				if(circles[j - 7].className != 'circle')
@@ -56,6 +61,8 @@ var changeClass = function( name, history ) {
 				j-=7;
 			}
 		}
+		if( j < 0 )
+			return;
 		circles[j].className = 'circleyellow';
 		moveHistory.push(j);
 		checkWin( j, 'circleyellow', true, circles );
@@ -82,6 +89,8 @@ var takeBack = function( button ) {
 buttonElement.addEventListener("click",function(){takeBack(buttonElement)});
 //onclick event to play vs AI
 AIButton.addEventListener("click",function(){runAI()});
+//onclick event to restart game
+restart.addEventListener("click",function(){restartGame()});
 //onclick events to fill circles
 for(var i = 0; i < circles.length; i ++){
 	(function(i){
@@ -194,7 +203,9 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				if(currentColor == 'circleyellow'){
 					currentColor = 'Yellow';
 				}
+				gameOver = true;
 				alert(currentColor + ' Wins!');
+
 				return true;
 			}
 			if(winCount >= 4){
@@ -280,6 +291,9 @@ var runAI = function(){
 	AIOn = true;
 }
 var copyAndComputeAI = function(){
+	if(gameOver){
+		return;
+	}
 	var currentColor;
 	var otherColor;
 	if(count % 2 == 0){
@@ -314,6 +328,7 @@ var copyAndComputeAI = function(){
 }
 var computeAI = function(currentConfiguration, currentColor){
 	var otherColor;
+	var bestMove = [[]];
 	if(currentColor == 'circlered')
 		otherColor = 'circleyellow';
 	else
@@ -329,7 +344,7 @@ var computeAI = function(currentConfiguration, currentColor){
 		if(possibleMovesWithPoints[i][1] < -500){
 			var badIndex = possibleMovesWithPoints[i][0];
 			for(var j = 0; j < possibleMovesWithPoints.length; j++){
-				if(possibleMovesWithPoints[j][0] == badIndex){
+				if(possibleMovesWithPoints[j][0] == badIndex && possibleMovesWithPoints.length > 1){
 					possibleMovesWithPoints.splice(j, 1);
 					j--;
 				}
@@ -349,6 +364,7 @@ var computeAI = function(currentConfiguration, currentColor){
 			high_value_array.push(possibleMovesWithPoints[i]);
 		}
 	}
+	console.log(high_value_array);
 	bestMove = high_value_array[Math.floor(Math.random()*high_value_array.length)][0];
 	return bestMove;
 }
@@ -380,7 +396,14 @@ var checkMoveValue = function(currentConfiguration, currentId, currentColor ){
 	}
 	return currentColorPoints;
 }
-
+var restartGame = function(){
+	for(var i = 0; i < circles.length; i++){
+		circles[i].className = 'circle';
+	}
+	gameOver = false;
+	count = 2;
+	AIOn = false;
+}
 
 
 
