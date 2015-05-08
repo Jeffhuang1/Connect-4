@@ -169,7 +169,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				if(currentColor != currentConfiguration[currentId - interval].className && interval !=0){
 					break;
 				}
-				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && leftColumn.indexOf(currentId - interval) > -1){
+				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && leftColumn.indexOf(currentId - interval) > -1 && interval != 0){
 					break;
 				}
 				if(checkWinArray[i] == 8 && rightColumn.indexOf(currentId - interval) > -1){
@@ -185,7 +185,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				if(currentColor != currentConfiguration[currentId + interval].className && interval !=0){
 					break;
 				}
-				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && rightColumn.indexOf(currentId + interval) > -1){
+				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && rightColumn.indexOf(currentId + interval) > -1 && interval != 0){
 					break;
 				}
 				if(checkWinArray[i] == 8 && leftColumn.indexOf(currentId + interval) > -1){
@@ -291,7 +291,7 @@ var runAI = function(){
 	AIOn = true;
 }
 var copyAndComputeAI = function(){
-	if(gameOver){
+	if(gameOver || !AIOn){
 		return;
 	}
 	var currentColor;
@@ -360,11 +360,20 @@ var computeAI = function(currentConfiguration, currentColor){
 		}
 	}
 	for(var i = 0; i < possibleMovesWithPoints.length; i++){
-		if(possibleMovesWithPoints[i][1] == highest_value){
-			high_value_array.push(possibleMovesWithPoints[i]);
+		//prevents ai from making dumb moves in the beginning
+		if(count <= 5){
+			if(possibleMovesWithPoints[i][1] == highest_value){
+				high_value_array.push(possibleMovesWithPoints[i]);
+			}
+		}
+		else{ 
+			console.log('current value = '+possibleMovesWithPoints[i][1]);
+			console.log('highest value = '+highest_value)
+			if(possibleMovesWithPoints[i][1] == highest_value || (highest_value - possibleMovesWithPoints[i][1] > 0 && highest_value - possibleMovesWithPoints[i][1] < 3)){
+				high_value_array.push(possibleMovesWithPoints[i]);
+			}
 		}
 	}
-	console.log(high_value_array);
 	bestMove = high_value_array[Math.floor(Math.random()*high_value_array.length)][0];
 	return bestMove;
 }
@@ -401,7 +410,7 @@ var restartGame = function(){
 		circles[i].className = 'circle';
 	}
 	gameOver = false;
-	count = 2;
+	count = 0;
 	AIOn = false;
 }
 
