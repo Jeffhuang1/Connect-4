@@ -1,4 +1,9 @@
-//creates an array of circles
+/*
+#####################################
+##   Connect 4 by Jeffrey Huang    ##
+##		   May 9th, 2015		   ##
+#####################################
+*/
 var circles = [];
 for(var i = 0; i < 42; i ++ ){
 	var element = document.getElementById(String(i));
@@ -20,6 +25,7 @@ var changeClass = function( name, history ) {
 	while( circles[j] != name ){
 		j++;
 	}
+	//calculates which circle to change to red color
 	if( count % 2 == 0 ){
 		if(circles[j].className == 'circlered' || circles[j].className =='circleyellow'){
 			while(j < 42){
@@ -39,12 +45,14 @@ var changeClass = function( name, history ) {
 		}
 		if( j < 0 )
 			return;
+		//changes circle to red color
 		circles[j].className = 'circlered';
 		moveHistory.push(j);
 		checkWin( j, 'circlered', true, circles );
 		count++;
 		}
 	else{
+		//checks which circle to change to yellow color
 		if(circles[j].className == 'circlered' || circles[j].className =='circleyellow'){
 			while(j < 42){
 				if(circles[j].className == 'circle')
@@ -63,12 +71,14 @@ var changeClass = function( name, history ) {
 		}
 		if( j < 0 )
 			return;
+		//changes circle to yellow color
 		circles[j].className = 'circleyellow';
 		moveHistory.push(j);
 		checkWin( j, 'circleyellow', true, circles );
 		count++;
 	}
 };
+//allows moves to be taken back
 var takeBack = function( button ) {
 	if(moveHistory.length == 0){
 		return;
@@ -162,8 +172,8 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 	var interval;
 	var winCount = 1;
 	var checkWinArray = [8,6,1,7];
-		//check right diagonal
 		for(var i = 0; i < checkWinArray.length; i++){
+			//check down, left, and diagonal left for a win
 			interval = 0;
 			while( currentId - interval >= 0){
 				if(currentColor != currentConfiguration[currentId - interval].className && interval !=0){
@@ -172,7 +182,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && leftColumn.indexOf(currentId - interval) > -1 && interval != 0){
 					break;
 				}
-				if(checkWinArray[i] == 8 && rightColumn.indexOf(currentId - interval) > -1){
+				if(checkWinArray[i] == 8 && rightColumn.indexOf(currentId - interval) > -1 && interval !=0){
 					break;
 				}
 				if(	findSurroundingCircles( currentId - interval, currentColor ).indexOf( currentId - interval - checkWinArray[i]) != -1){
@@ -180,6 +190,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				}
 				interval += checkWinArray[i];
 			}
+			//check up, right, and diagonal right for a win
 			interval = 0;
 			while( currentId + interval < 42 ){
 				if(currentColor != currentConfiguration[currentId + interval].className && interval !=0){
@@ -188,7 +199,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				if((checkWinArray[i] == 1 || checkWinArray[i] == 6) && rightColumn.indexOf(currentId + interval) > -1 && interval != 0){
 					break;
 				}
-				if(checkWinArray[i] == 8 && leftColumn.indexOf(currentId + interval) > -1){
+				if(checkWinArray[i] == 8 && leftColumn.indexOf(currentId + interval) > -1 && interval !=0){
 					break;
 				}
 				if(	findSurroundingCircles( currentId + interval, currentColor ).indexOf( currentId + interval + checkWinArray[i]) != -1){
@@ -196,6 +207,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 				}
 				interval += checkWinArray[i];
 			}
+			//notifies user if someone has won
 			if( winCount >= 4 && notify == true){
 				if(currentColor == 'circlered'){
 					currentColor = 'Red';
@@ -208,6 +220,7 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 
 				return true;
 			}
+			//pushes move points to an array for the AI
 			if(winCount >= 4){
 				four_point_array.push(currentId);
 			}
@@ -222,9 +235,11 @@ var checkWin = function( currentId, currentColor, notify, currentConfiguration )
 			}
 		winCount = 1;
 		}
+		//returns results of a move to the AI
 		var pointObject = {currentid: currentId, four_point_array: four_point_array, three_point_array: three_point_array, two_point_array:two_point_array, one_point_array:one_point_array};
 		return pointObject;
 	};
+//finds all the possible moves with the current board configuration
 var findPossibleMoves = function(currentConfiguration){
 	var possibleMoves = [];
 	for(var i = 0; i < 7; i++){
@@ -239,45 +254,6 @@ var findPossibleMoves = function(currentConfiguration){
 	}
 	return possibleMoves;
 };
-
-var findBestMove = function(currentConfiguration, currentColor){
-	var possibleMoves = findPossibleMoves(circles);
-	var results = [];
-	for( var i=0; i<possibleMoves.length; i++){
-		results[i] = checkWin(possibleMoves[i], currentColor, false, currentConfiguration);
-	}
-	//array of best moves, first index is number of points
-	return filterMoves(results);
-};
-var filterMoves = function(results){
-	var bestMoves = [[],[],[],[],[]];
-	//index 0 is four points, 1 is three points, 2 is two points, and 3 is one point
-	for(var i = 0; i<results.length; i++){
-		//find highest point value
-		if(results[i].four_point_array.length > 0){
-			bestMoves[1].push(results[i].currentid);
-		}
-		if(results[i].three_point_array.length > 0 && results[i].four_point_array.length == 0){
-			bestMoves[2].push(results[i].currentid);
-		}
-		if(results[i].two_point_array.length > 0 && results[i].three_point_array.length == 0 && results[i].four_point_array.length == 0){
-			bestMoves[3].push(results[i].currentid);
-		}
-		if(results[i].one_point_array.length > 0 && results[i].three_point_array.length == 0 && results[i].two_point_array.length == 0 && results[i].four_point_array.length == 0){
-			bestMoves[4].push(results[i].currentid);
-		}
-	}
-	//add highest point array to the beginning
-	if(bestMoves[1].length > 0)
-		bestMoves[0][0] = 4;
-	else if(bestMoves[2].length > 0)
-		bestMoves[0][0] = 3;
-	else if(bestMoves[3].length > 0)
-		bestMoves[0][0] = 2;
-	else if(bestMoves[4].length > 0)
-		bestMoves[0][0] = 1;
-	return bestMoves;
-}
 var runAI = function(){
 	if(!AIOn){
 		if(count %2 == 0)
@@ -304,6 +280,7 @@ var copyAndComputeAI = function(){
 		currentColor = 'circlered';
 		otherColor = 'circleyellow';
 	}
+	//prevents the AI from making a corner move on the first move
 	if(count == 0){
 		bestMove = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
 		circles[bestMove].className = otherColor;
@@ -313,7 +290,7 @@ var copyAndComputeAI = function(){
 		return;
 	}
 	if(aiCount == count){
-		//new copy of circles
+		//new copy of circles for AI to calculate with
 		var circlesCopy = [];
 		for(var i = 0; i < circles.length; i++){
 			circlesCopy[i] = {className: circles[i].className};
@@ -326,6 +303,7 @@ var copyAndComputeAI = function(){
 		count++;
 	}
 }
+//assigns points to each possible move and picks a random move if the points for the respective move is + or - "1"
 var computeAI = function(currentConfiguration, currentColor){
 	var otherColor;
 	var bestMove = [[]];
@@ -335,6 +313,7 @@ var computeAI = function(currentConfiguration, currentColor){
 		otherColor = 'circlered';
 	var possibleMoves = findPossibleMoves(currentConfiguration);
 	var possibleMovesWithPoints = [];
+	//checks the move values for both players
 	for(var i = 0; i < possibleMoves.length; i++){
 		possibleMovesWithPoints.push(checkMoveValue(currentConfiguration, possibleMoves[i], currentColor));
 		possibleMovesWithPoints.push(checkMoveValue(currentConfiguration, possibleMoves[i], otherColor));
@@ -351,7 +330,7 @@ var computeAI = function(currentConfiguration, currentColor){
 			}
 		}
 	}
-	//find highest value in array
+	//find highest value or best move in array
 	var highest_value = -100000;
 	var high_value_array = [];
 	for(var i = 0; i < possibleMovesWithPoints.length; i++){
@@ -360,20 +339,20 @@ var computeAI = function(currentConfiguration, currentColor){
 		}
 	}
 	for(var i = 0; i < possibleMovesWithPoints.length; i++){
-		//prevents ai from making dumb moves in the beginning
+		//prevents ai from making poor moves in the beginning
 		if(count <= 5){
 			if(possibleMovesWithPoints[i][1] == highest_value){
 				high_value_array.push(possibleMovesWithPoints[i]);
 			}
 		}
 		else{ 
-			console.log('current value = '+possibleMovesWithPoints[i][1]);
-			console.log('highest value = '+highest_value)
-			if(possibleMovesWithPoints[i][1] == highest_value || (highest_value - possibleMovesWithPoints[i][1] > 0 && highest_value - possibleMovesWithPoints[i][1] < 3)){
+			//adds moves to the possible moves list if the move is + or - 1 from the best move
+			if(possibleMovesWithPoints[i][1] == highest_value || (highest_value - possibleMovesWithPoints[i][1] > 0 && highest_value - possibleMovesWithPoints[i][1] < 2)){
 				high_value_array.push(possibleMovesWithPoints[i]);
 			}
 		}
 	}
+	//randomly chooses a move from the high value moves
 	bestMove = high_value_array[Math.floor(Math.random()*high_value_array.length)][0];
 	return bestMove;
 }
@@ -390,13 +369,13 @@ var checkMoveValue = function(currentConfiguration, currentId, currentColor ){
 	var checkWinObject = checkWin(currentId, currentColor, false, currentConfiguration);
 	if(currentId + 7 < 42)
 		checkWinObject2 = checkWin(currentId+7, otherColor, false, currentConfiguration);
-	if(currentColor == aiColor && checkWinObject2 == null){
+	if(currentColor == aiColor && checkWinObject2 == null){  // accounts for the fact that a move can be in the top slot and prioritizes
 		currentColorPoints[1] = checkWinObject.four_point_array.length*1500 + checkWinObject.three_point_array.length*3 + checkWinObject.two_point_array.length*2;
 	}
-	else if(currentColor == aiColor){
+	else if(currentColor == aiColor){ // accounts for the move directly after the current move to make sure the ai does not make a poor move
 		currentColorPoints[1] = checkWinObject.four_point_array.length*1500 + checkWinObject.three_point_array.length*3 + checkWinObject.two_point_array.length*2 - checkWinObject2.four_point_array.length*1000 - checkWinObject2.three_point_array.length*3 - checkWinObject2.two_point_array.length*2;
 
-	}
+	}// prioritizes four in a row over opponent 4 in a row
 	else if(checkWinObject2 == null){
 		currentColorPoints[1] = checkWinObject.four_point_array.length*2000 + checkWinObject.three_point_array.length*3 + checkWinObject.two_point_array.length*2;
 	}
@@ -405,6 +384,7 @@ var checkMoveValue = function(currentConfiguration, currentId, currentColor ){
 	}
 	return currentColorPoints;
 }
+//allows the game to be restarted at any point or after someone has won
 var restartGame = function(){
 	for(var i = 0; i < circles.length; i++){
 		circles[i].className = 'circle';
